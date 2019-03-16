@@ -1,5 +1,5 @@
 # ethgc
-ethgc: Ethereum Gift Cards - giveaway ETH or tokens with a redeem code
+ethgc: Ethereum Gift Cards - giveaway ETH, tokens (ERC-20), or NFTs (ERC-721) with a redeem code
 
 ## Process
 
@@ -23,6 +23,6 @@ Why is there a claim step instead of just redeeming directly?
 
 How much does it cost?
 
-    This is free and open-source.  There is however the standard gas fee for Ethereum transactions. (TODO: enter gas costs)
+    0.00005 ETH (less than $0.01) per card plus the standard gas fee for Ethereum transactions. (TODO: enter gas costs)
 
-    You can support development of tools like this by sending ETH to 0x7a23608a8ebe71868013bda0d900351a83bb4dc2 or by emailing a redeem code to HardlyDiff at gmail.
+    You can also support development of tools like this by sending a little extra when you make a card, sending ETH to 0x7a23608a8ebe71868013bda0d900351a83bb4dc2 or by emailing a redeem code to HardlyDiff at gmail.
