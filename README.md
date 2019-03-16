@@ -1,6 +1,8 @@
 # ethgc
 ethgc: Ethereum Gift Cards - giveaway ETH, tokens (ERC-20), or NFTs (ERC-721) with a redeem code
 
+![logo](logo.png)
+
 ## Process
 
 1) Create gift card
