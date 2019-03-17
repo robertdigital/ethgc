@@ -1,3 +1,6 @@
-language: generic
+language: node_js
+node_js:
+  - "10"
 script:
-  - cd contracts && npm run test
+  - cd library && npm i && cd ..
+  - cd contracts && npm i && npm run test && cd ..
