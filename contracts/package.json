@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "giveaway ETH or tokens with a redeem code",
   "main": "index.js",
+  "engines": {
+    "node": "=8.11.4"
+  },
   "scripts": {
     "test": "truffle test"
   },
