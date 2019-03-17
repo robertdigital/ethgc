@@ -18,7 +18,6 @@ class ethgc
       'utf8',
       (err, file) => 
       {
-        console.log(err)
         file = JSON.parse(file);
         this.contract = new this.web3.eth.Contract(file.abi, file.address)
       }
