@@ -61,4 +61,4 @@ typings/
 .next
 
 /contracts/build/
-/contracts/package-lock.json
+*package-lock.json
