@@ -9,71 +9,93 @@ class ethgc
     this.hardlyWeb3 = new HardlyWeb3(currentProvider, defaultAccount)
   }
 
-  // TODO: there has to be a better way... right?
+  // TODO: Is there an alternative to init after construction?
   async init()
   {
     const id = await this.hardlyWeb3.web3.eth.net.getId()
-    fs.readFile(
+    const file = JSON.parse(fs.readFileSync(
       `../library/abi/${id}.json`,
-      'utf8',
-      (err, file) => 
-      {
-        if(err)
-        {
-          throw new Error(err)
-        }
-        file = JSON.parse(file)
-        this.contract = new this.hardlyWeb3.web3.eth.Contract(
-          file.abi, file.address
-        )
-      }
+      'utf8'))
+    this.contract = new this.hardlyWeb3.web3.eth.Contract(
+      file.abi, file.address
     )
   }
 
-  async createCard(token, value, redeemCodeHashHashHash)
+  getPrivateKey(redeemCode)
   {
+    const code = this.contract.options.address + redeemCode;
+    return this.hardlyWeb3.web3.utils.keccak256(code)
+  }
+
+  getAddress(privateKey)
+  {
+    return this.hardlyWeb3.web3.eth.accounts.privateKeyToAccount(privateKey).address
+  }
+
+  async createCard(token, value, redeemCodeAddress, message = '')
+  {
+    if(!token)
+    {
+      token = this.hardlyWeb3.web3.utils.padLeft(0, 40);
+    }
+    let ethValue = await this.getCostToCreateCard()
+    if(token == this.hardlyWeb3.web3.utils.padLeft(0, 40))
+    {
+      ethValue = ethValue.plus(value)
+    }
     return await this.contract.methods.createCard(
       token,
       value,
-      redeemCodeHashHashHash
+      redeemCodeAddress,
+      message
     ).send(
       {
         from: this.hardlyWeb3.web3.defaultAccount,
-        value: (await this.getCostToCreateCard()).plus(value).toFixed()
+        value: ethValue.toFixed(),
+        gas: 5000000
       }
     )
   }
 
-  async claimCard(redeemCodeHashHash)
+  async sign(account, redeemCodePrivateKey)
   {
-    return await this.contract.methods.claimCard(redeemCodeHashHash).send(
+    const sig = this.hardlyWeb3.web3.eth.accounts.privateKeyToAccount(redeemCodePrivateKey)
+      .sign(this.hardlyWeb3.web3.utils.keccak256(
+        this.contract.options.address + account.substring(2)
+      ))
+    return [sig.v, sig.r, sig.s]
+  }
+
+  async redeem(redeemCodeAddress, v, r, s)
+  {
+    return await this.contract.methods.redeem(redeemCodeAddress, v, r, s).send(
       {
         from: this.hardlyWeb3.web3.defaultAccount
       }
     )
   }
 
-  async redeemGift(redeemCodeHash)
+  async cancelCard(redeemCodeAddress)
   {
-    return await this.contract.methods.redeemGift(redeemCodeHash).send(
+    return await this.contract.methods.cancelCard(redeemCodeAddress).send(
       {
         from: this.hardlyWeb3.web3.defaultAccount
       }
     )
   }
 
-  async ownerChangeFee(costToCreateCard)
+  async developerSetCostToCreateCard(costToCreateCard)
   {
-    return await this.contract.methods.ownerChangeFee(costToCreateCard).send(
+    return await this.contract.methods.developerSetCostToCreateCard(costToCreateCard).send(
       {
         from: this.hardlyWeb3.web3.defaultAccount
       }
     )
   }
 
-  async ownerWithdrawFees()
+  async developerWithdrawFees()
   {
-    return await this.contract.methods.ownerWithdrawFees().send(
+    return await this.contract.methods.developerWithdrawFees().send(
       {
         from: this.hardlyWeb3.web3.defaultAccount
       }
@@ -89,10 +111,10 @@ class ethgc
     ))
   }
 
-  async getCardByHashHashHash(redeemCodeHashHashHash)
+  async getCardByAddress(redeemCodeAddress)
   {
-    return await this.contract.methods.redeemCodeHashHashHashToCard(
-      redeemCodeHashHashHash
+    return await this.contract.methods.redeemCodeAddressToCard(
+      redeemCodeAddress
     ).call(
       {
         from: this.hardlyWeb3.web3.defaultAccount
