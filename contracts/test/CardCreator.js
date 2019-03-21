@@ -13,21 +13,21 @@ contract('CardCreator', (accounts) => {
   })
   
   describe('For cards I created', () => {
-    let redeemCodeAddress
+    let cardAddress
 
     before(async () => {
       const redeemCodePrivateKey = ethgc.getPrivateKey(redeemCode)
-      redeemCodeAddress = ethgc.getAddress(redeemCodePrivateKey)
-      await ethgc.createCard(
-        web3.utils.padLeft(0, 40),
-        value,
-        redeemCodeAddress
+      cardAddress = ethgc.getAddress(redeemCodePrivateKey)
+      await ethgc.createCards(
+        [cardAddress],
+        [null],
+        [value]
       )
     })
 
     it('can cancel the card and get the ETH back', async () => {
       const balanceBefore = await ethgc.hardlyWeb3.getEthBalance()
-      let tx = await ethgc.cancelCard(redeemCodeAddress)
+      let tx = await ethgc.cancelCards([cardAddress])
       const gasCost = await ethgc.hardlyWeb3.getGasCost(tx)
       assert.equal(
         (await ethgc.hardlyWeb3.getEthBalance()).toFixed(),
@@ -38,24 +38,27 @@ contract('CardCreator', (accounts) => {
 
   describe('For cards others created', () => {
     const value = 42
-    let redeemCodeAddress
+    let cardAddress
 
     before(async () => {
       const redeemCodePrivateKey = ethgc.getPrivateKey(redeemCode)
-      redeemCodeAddress = ethgc.getAddress(redeemCodePrivateKey)
+      cardAddress = ethgc.getAddress(redeemCodePrivateKey)
       ethgc.hardlyWeb3.switchAccount(accounts[2])
-      await ethgc.createCard(
-        web3.utils.padLeft(0, 40),
-        value,
-        redeemCodeAddress
+      await ethgc.createCards(
+        [cardAddress],
+        [null],
+        [value],
       )
       ethgc.hardlyWeb3.switchAccount(accounts[0])
     })
 
-    it('should fail to cancel card', async () => {
-      await shouldFail(
-        ethgc.cancelCard(redeemCodeAddress),
-        'NOT_YOUR_CARD'
+    it('cancel card should be a noop', async () => {
+      const balanceBefore = await ethgc.hardlyWeb3.getEthBalance()
+      let tx = await ethgc.cancelCards([cardAddress])
+      const gasCost = await ethgc.hardlyWeb3.getGasCost(tx)
+      assert.equal(
+        (await ethgc.hardlyWeb3.getEthBalance()).toFixed(),
+        balanceBefore.minus(gasCost).toFixed()
       )
     })
   })

@@ -13,24 +13,31 @@ contract('CreateCard', (accounts) => {
   describe('ETH card', () => {
     const redeemCode = 'abc123'
     const value = 42
-    let redeemCodePrivateKey, redeemCodeAddress
+    let redeemCodePrivateKey, cardAddress
 
     before(async () => {
       redeemCodePrivateKey = ethgc.getPrivateKey(redeemCode)
-      redeemCodeAddress = ethgc.getAddress(redeemCodePrivateKey)
-      const tx = await ethgc.createCard(
-        web3.utils.padLeft(0, 40),
-        value,
-        redeemCodeAddress
+      cardAddress = ethgc.getAddress(redeemCodePrivateKey)
+
+      const tx = await ethgc.createCards(
+        [cardAddress],
+        [web3.utils.padLeft(0, 40)],
+        [value]
       )
       console.log(`Create cost ${tx.gasUsed}`)
     })
 
-    it('Can read an available card', async () => {
-      const card = await ethgc.getCardByAddress(redeemCodeAddress)
+    it('Can read the card creator', async () => {
+      const card = await ethgc.getCard(cardAddress)
       assert.equal(card.createdBy, accounts[0])
-      assert.equal(card.token, web3.utils.padLeft(0, 40))
-      assert.equal(card.valueOrTokenId, value)
+    })
+    
+    it('Can read token balances', async () => {
+      const card = await ethgc.getCard(cardAddress) 
+      assert.equal(card.tokenAddresses.length, 1);
+      assert.equal(card.valueOrIds.length, 1)
+      assert.equal(card.tokenAddresses[0], web3.utils.padLeft(0, 40))
+      assert.equal(card.valueOrIds[0], value)
     })
   })
 })

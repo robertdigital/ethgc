@@ -172,7 +172,7 @@ contract('NftProxy', (accounts) => {
       ), 'NOT_YOUR_NFT')
     })
 
-    it('transfer reverts if the transfer fails', async () => {
+    it('should fail if transfer fails', async () => {
       await shouldFail(mockNftProxy.transferNft(
         testErc721Noop.address,
         accounts[7],

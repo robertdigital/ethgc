@@ -32,22 +32,32 @@ class ethgc
     return this.hardlyWeb3.web3.eth.accounts.privateKeyToAccount(privateKey).address
   }
 
-  async createCard(token, value, redeemCodeAddress, message = '')
+  async createCards(
+    cardAddresses,
+    tokenAddresses,
+    valueOrIds,
+    description = '',
+    redeemedMessage = ''
+  )
   {
-    if(!token)
+    let ethValue = (await this.getCostToCreateCard()).times(cardAddresses.length)
+    for(let i = 0; i < tokenAddresses.length; i++)
     {
-      token = this.hardlyWeb3.web3.utils.padLeft(0, 40);
+      if(!tokenAddresses[i])
+      {
+        tokenAddresses[i] = this.hardlyWeb3.web3.utils.padLeft(0, 40);
+      }
+      if(tokenAddresses[i] === this.hardlyWeb3.web3.utils.padLeft(0, 40))
+      {
+        ethValue = ethValue.plus(valueOrIds[i]).times(cardAddresses.length)
+      }
     }
-    let ethValue = await this.getCostToCreateCard()
-    if(token == this.hardlyWeb3.web3.utils.padLeft(0, 40))
-    {
-      ethValue = ethValue.plus(value)
-    }
-    return await this.contract.methods.createCard(
-      token,
-      value,
-      redeemCodeAddress,
-      message
+    return await this.contract.methods.createCards(
+      cardAddresses,
+      tokenAddresses,
+      valueOrIds,
+      description,
+      redeemedMessage
     ).send(
       {
         from: this.hardlyWeb3.web3.defaultAccount,
@@ -66,18 +76,26 @@ class ethgc
     return [sig.v, sig.r, sig.s]
   }
 
-  async redeem(redeemCodeAddress, v, r, s)
+  async redeemCard(cardAddress, v, r, s, tokenAddress = "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
   {
-    return await this.contract.methods.redeem(redeemCodeAddress, v, r, s).send(
+    if(tokenAddress == -1)
+    {
+      tokenAddress = "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+    }
+    return await this.contract.methods.redeemCard(cardAddress, v, r, s, tokenAddress).send(
       {
         from: this.hardlyWeb3.web3.defaultAccount
       }
     )
   }
 
-  async cancelCard(redeemCodeAddress)
+  async cancelCards(cardAddresses, tokenAddress = "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
   {
-    return await this.contract.methods.cancelCard(redeemCodeAddress).send(
+    if(tokenAddress == -1)
+    {
+      tokenAddress = "0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+    }
+    return await this.contract.methods.cancelCards(cardAddresses, tokenAddress).send(
       {
         from: this.hardlyWeb3.web3.defaultAccount
       }
@@ -111,10 +129,10 @@ class ethgc
     ))
   }
 
-  async getCardByAddress(redeemCodeAddress)
+  async getCard(cardAddress)
   {
-    return await this.contract.methods.redeemCodeAddressToCard(
-      redeemCodeAddress
+    return await this.contract.methods.getCard(
+      cardAddress
     ).call(
       {
         from: this.hardlyWeb3.web3.defaultAccount
