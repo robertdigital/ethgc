@@ -212,6 +212,42 @@ class ethgc
     ))
   }
 
+  async getRedeemTxByCode(redeemCode)
+  {
+    if(!redeemCode) return
+    await this._init()
+    const address = await this.getAddressByCode(redeemCode)
+    const results = await this.contract.getPastEvents('Redeem', {
+      filter: {redeemCode: address}, // Using an array means OR: e.g. 20 or 23
+      fromBlock: 0,
+      toBlock: 'latest'
+    })
+    if (results.length > 0)
+    {
+      const tx = results[results.length - 1]
+      return tx
+    }
+  }
+
+  async getCardsICreated()
+  {
+    await this._init()
+    const results = await this.contract.getPastEvents('CreateCard', {
+      filter: {creator: this.hardlyWeb3.web3.defaultAccount}, // Using an array means OR: e.g. 20 or 23
+      fromBlock: 0,
+      toBlock: 'latest'
+    })
+    let cards = []
+    for(let i = 0; i < results.length; i++)
+    {
+      cards.push({
+        tx: results[i].transactionHash,
+        redeemCodeAddress: results[i].returnValues.redeemCode
+      })
+    }
+    return cards
+  }
+
   async getCardMessages(redeemCode)
   {
     if(!redeemCode) return
@@ -222,7 +258,8 @@ class ethgc
       fromBlock: 0,
       toBlock: 'latest'
     })
-    if (results.length > 0) {
+    if (results.length > 0)
+    {
       const tx = results[results.length - 1].transactionHash
       const request = await this.hardlyWeb3.web3.eth.getTransaction(tx)
       /**

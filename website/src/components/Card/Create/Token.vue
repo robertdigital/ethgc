@@ -28,7 +28,7 @@
     <span v-if="token.type !== 'ETH'">
       <button>Unlock</button>
     </span>
-    <StatusIcon v-if="status" :status="status.status" :message="status.message" />
+    <StatusIcon :status="status" />
   </div>
 </template>
 
@@ -46,16 +46,17 @@ export default {
       // eslint-disable-next-line no-undef
       bouncer: _.debounce(async () => {
         const balance = await this.ethjs.hardlyWeb3.getEthBalance()
+        this.$set(this.status, 'loadingMessage', undefined)
         if (balance.gte(this.ethjs.hardlyWeb3.toWei(this.token.value, 'ether'))) {
-          this.status = {
+          this.status.status.push({
             status: 'SUCCESS',
             message: 'You have enough tokens in your wallet for this gift'
-          }
+          })
         } else {
-          this.status = {
+          this.status.status.push({
             status: 'ERROR',
             message: 'You do not have enough tokens in your wallet for this gift'
-          }
+          })
         }
       }, 2000)
     }
@@ -87,12 +88,13 @@ export default {
     },
     debouncedGetStatus () {
       this.bouncer.cancel()
+      this.status = {status: []}
 
       if (!this.token.value) {
-        this.status = {
+        this.status.status.push({
           status: 'ERROR',
           message: 'Please enter a value'
-        }
+        })
         return
       }
       if (this.token.type === 'ETH') {
@@ -105,19 +107,16 @@ export default {
               this.tokens[i].address === this.token.address
             )
           ) {
-            this.status = {
+            this.status.status.push({
               status: 'ERROR',
               message: 'You already have this token selected above.'
-            }
+            })
             return
           }
         }
       }
 
-      this.status = {
-        status: 'LOADING',
-        message: 'Confirming you have the balance available in your wallet'
-      }
+      this.$set(this.status, 'loadingMessage', 'Confirming you have the balance available in your wallet')
       this.bouncer()
     }
   },
