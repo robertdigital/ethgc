@@ -27,22 +27,22 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-{{ checksum "library/package.json" }}-{{ checksum "contracts/package.json" }}-{{ checksum "website/package.json" }}
 
             # fallback to using the latest cache if no exact match is found
             #- v1-dependencies-
 
-      - run: npm install
+      - run: cd library && npm i && cd ..
+      - run: cd contracts && npm i && cd ..
+      - run: cd website && npm i && cd ..
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "library/package.json" }}-{{ checksum "contracts/package.json" }}-{{ checksum "website/package.json" }}
 
       # run tests!
-      - run: library && npm i && cd ..
       - run: cd contracts && npm i && npm run test && cd ..
-      - run: cd website && npm i && npm run build && cd ..
       - run: cd website && npm i && npm run build && cd ..
 
       # deploy
