@@ -60,14 +60,14 @@
     "shelljs": "0.8.3",
     "uglifyjs-webpack-plugin": "1.1.1",
     "url-loader": "1.1.2",
+    "vue-cli": "2.9.6",
     "vue-loader": "13.3.0",
     "vue-style-loader": "3.0.1",
     "vue-template-compiler": "2.5.2",
     "webpack": "3.6.0",
     "webpack-bundle-analyzer": "2.9.0",
     "webpack-dev-server": "3.2.1",
-    "webpack-merge": "4.2.1",
-    "vue-cli": "2.9.6"
+    "webpack-merge": "4.2.1"
   },
   "engines": {
     "node": ">= 6.0.0",
