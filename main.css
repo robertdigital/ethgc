@@ -1,4 +1,21 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,400,Open-Sans);
+.nav {
+  padding-top: 1em;
+  padding-bottom: 2em;
+  font-size: 1.5em;
+  font-weight: bold; }
+
+.nav > a:hover {
+  background-color: #828585;
+  color: #ecf0f1; }
+
+.nav > a:active {
+  background-color: #131313;
+  color: #ecf0f1; }
+
+.nav .active {
+  background-color: #6b6b6a; }
+
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
@@ -7087,6 +7104,7 @@ a.text-dark:hover, a.text-dark:focus {
 .jumbotron {
   padding-top: 1em;
   padding-bottom: 2em;
+  color: black;
 }
 .inputAddress {
   max-width: 36em;
@@ -7105,6 +7123,9 @@ body {
   flex: 1 0 auto;
   /* Prevent Chrome, Opera, and Safari from letting these items shrink to smaller than their content's default minimum size. */
   padding: 20px;
+  width: 100%;
+  max-width: 75em;
+  margin: auto;
 }
 body {
   font-family: "Open-Sans", sans-serif;
