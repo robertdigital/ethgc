@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:100,400,Open-Sans);
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,300,400);
 .nav {
   padding-top: 1em;
   padding-bottom: 2em;
@@ -7145,7 +7145,6 @@ a.text-dark:hover, a.text-dark:focus {
   width: 8em;
 }
 .logoText {
-  font-family: "Roboto", "Open-Sans", sans-serif;
   position: relative;
   top: -2em;
   left: -0.75em;
@@ -7198,7 +7197,7 @@ body {
   margin: auto;
 }
 body {
-  font-family: "Open-Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400;
   width: 100%;
 }
