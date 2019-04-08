@@ -1,4 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,300,400);
+.jumbotron {
+  background-color: #828585 !important; }
+
 .nav {
   padding-top: 1em;
   padding-bottom: 2em;
