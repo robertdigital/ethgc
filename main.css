@@ -7171,6 +7171,8 @@ a.text-dark:hover, a.text-dark:focus {
 
 
 .jumbotron {
+  width: 90%;
+  max-width: 40em;
   padding-top: 1em;
   padding-bottom: 2em;
   color: black;
