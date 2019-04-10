@@ -5,7 +5,7 @@
 # Used with their MIT license https://github.com/eldarlabs/ghpages-deploy-script/blob/master/LICENSE
 
 # abort the script if there is a non-zero error
-set -e
+# set -e
 
 # show where we are on the machine
 pwd
@@ -18,8 +18,8 @@ git config --global user.name "$GH_NAME" > /dev/null 2>&1
 # stage any changes and new files
 git add -A
 # now commit
-git commit --allow-empty -m "Deploy lint and library update"
+git commit -m "Deploy lint and library update"
 # and push, but send any output to /dev/null to hide anything sensitive
-git push --force --quiet
+git push --force --quiet --set-upstream origin $CIRCLE_BRANCH
 
 echo "Pushed change"
