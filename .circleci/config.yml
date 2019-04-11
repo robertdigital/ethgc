@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build:
+  checkoutAndNpm:
     docker:
       - image: circleci/node:10
     working_directory: ~/repo
@@ -35,7 +35,19 @@ jobs:
           paths:
             - repo
 
-  lint:
+  lintJs:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: '..'
+      - run: mkdir ~/.ssh
+      - run: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      - run: npm run lint # includes --fix
+      - run: bash .circleci/commit.sh
+
+  lintSolidity:
     docker:
       - image: circleci/node:10
     working_directory: ~/repo
@@ -44,9 +56,9 @@ jobs:
           at: '..'
 
       # run tests
-      - run: npm run lint # includes --fix
+      - run: cd contracts && npm run lint
 
-  rest:
+  compileContracts:
     docker:
       - image: circleci/node:10
     working_directory: ~/repo
@@ -54,49 +66,100 @@ jobs:
       - attach_workspace:
           at: '..'
 
-      - run: cd contracts && npm run compile && npm run test && npm run lint && cd ..
+      - run: cd contracts && npm run compile
 
-      # artifacts
+      - persist_to_workspace:
+          root: '..'
+          paths:
+            - repo/contracts/build
+
+  testContracts:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: '..'
+
+      - run: cd contracts && npm run test
+
+  deployContracts:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: '..'
+
       - run: |
             if [ $CIRCLE_BRANCH == 'master' ]; then
               cd library && npm run deploy && cd ..
               bash .circleci/deploy-artifacts.sh
             fi
 
+  buildWebsite:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: '..'
+
       - run: cd website && npm run build && cd ..
 
-      # deploy website
+  deployWebsite:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: '..'
+
       - run: |
             if [ $CIRCLE_BRANCH == 'master' ]; then
               bash .circleci/deploy-ghpages.sh
             fi
 
-      # commit changes (lint and/or library updated)
-      - run: |
-            bash .circleci/commit.sh
+  prLibraryChange:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: '..'
+
+      # todo open PR
 
 workflows:
-  build-deploy:
+  build:
     jobs:
-      - build:
+      - checkoutAndNpm:
           filters:
             branches:
               ignore:
                 - gh-pages
                 - artifacts
-      - lint:
+      - lintJs:
           requires:
-            - build
-          filters:
-            branches:
-              ignore:
-                - gh-pages
-                - artifacts
-      - rest:
+            - checkoutAndNpm
+      - lintSolidity:
           requires:
-            - build
-          filters:
-            branches:
-              ignore:
-                - gh-pages
-                - artifacts
+            - checkoutAndNpm
+      - compileContracts:
+          requires:
+            - checkoutAndNpm
+      - testContracts:
+          requires:
+            - compileContracts
+      - deployContracts:
+          requires:
+            - compileContracts
+      - buildWebsite:
+          requires:
+            - deployContracts
+      - deployWebsite:
+          requires:
+            - buildWebsite
+      #- prLibraryChange:
+      #    requires:
+      #      - deployContracts

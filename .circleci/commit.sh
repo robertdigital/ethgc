@@ -20,6 +20,6 @@ git add -A
 # now commit
 git commit -m "Deploy lint and library update"
 # and push, but send any output to /dev/null to hide anything sensitive
-git push --force --quiet --set-upstream origin $CIRCLE_BRANCH
+git push --force --quiet origin $CIRCLE_BRANCH
 
 echo "Pushed change"
