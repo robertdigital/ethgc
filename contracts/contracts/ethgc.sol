@@ -24,4 +24,6 @@ contract ethgc is
   MixinCards,
   MixinCreate,
   MixinRedeem
-{}
+{
+  uint i = 0;
+}
