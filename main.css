@@ -7189,6 +7189,14 @@ a.text-dark:hover, a.text-dark:focus {
   max-width: 36em;
 }
 
+
+.metamaskLink {
+  font-size: 1.75em;
+  font-weight: 100;
+  position: relative;
+  top: -0.75em;
+}
+
 html,
 body {
   height: 100%;
