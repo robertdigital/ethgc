@@ -3,7 +3,6 @@
 <url> <loc>https://ethgc.com/docs/help</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="alternate" hreflang="en" href="https://ethgc.com/docs/en/help" /> </url>
 <url> <loc>https://ethgc.com/docs/index</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="alternate" hreflang="en" href="https://ethgc.com/docs/en/index" /> </url>
 <url> <loc>https://ethgc.com/docs/users</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="alternate" hreflang="en" href="https://ethgc.com/docs/en/users" /> </url>
-<url> <loc>https://ethgc.com/docs/docs/devTools</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://ethgc.com/docs/docs/devTools" /> </url>
 <url> <loc>https://ethgc.com/docs/docs/doc1</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://ethgc.com/docs/docs/doc1" /> </url>
 <url> <loc>https://ethgc.com/docs/docs/doc2</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://ethgc.com/docs/docs/doc2" /> </url>
 <url> <loc>https://ethgc.com/docs/docs/doc3</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://ethgc.com/docs/docs/doc3" /> </url>
