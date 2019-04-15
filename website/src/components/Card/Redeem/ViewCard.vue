@@ -1,14 +1,23 @@
 <template>
   <div>
-    <div v-for="(tokenAddress, index) in card.tokenAddresses" :key="index">
-      <Token
-        :token-address="tokenAddress"
-        :value-or-id="card.valueOrIds[index]"
-      />
-    </div>
+    <small>card contains:</small>
+    <ul class="list-group">
+      <div v-for="(tokenAddress, index) in card.tokenAddresses" :key="index">
+        <li class="list-group-item list-group-item-info">
+          <Token
+            :token-address="tokenAddress"
+            :value-or-id="card.valueOrIds[index]"
+          />
+        </li>
+      </div>
+    </ul>
     <div v-if="messages">
       <div v-if="messages.description">
-        Description: {{ messages.description }}
+        <small>from the card creator:</small>
+        <div>
+          &#8220;<span class="lead">{{ messages.description }}</span
+          >&#8221;
+        </div>
       </div>
       <div v-else>
         (no description)
