@@ -7178,6 +7178,14 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 
+.metamaskLink {
+  font-size: 1.75em;
+  font-weight: 100;
+  position: relative;
+  top: -0.75em;
+}
+
+
 .jumbotron {
   width: 90%;
   max-width: 40em;
@@ -7187,14 +7195,6 @@ a.text-dark:hover, a.text-dark:focus {
 }
 .inputAddress {
   max-width: 36em;
-}
-
-
-.metamaskLink {
-  font-size: 1.75em;
-  font-weight: 100;
-  position: relative;
-  top: -0.75em;
 }
 
 html,
