@@ -7,14 +7,10 @@
         v-for="(tx, index) in transactions"
         :key="index"
       >
-        <StatusIcon
-          :status="{
-            url:
-              '0x86c74643e51183b739c3f2164455ec6ef5077f9c037d4c657764a77c3470aab1',
-            urlMessage: 'etherscan.com'
-          }"
-        />
+        <ViewOnEtherscan :tx="tx" />
+
         <!-- <StatusIcon :status="{loadingMessage:'wip<br><small>click to view on EtherScan</small>'}" /> -->
+
         Create card
         <Date :date="Date.now()" />
         <span v-tooltip="'Success - 5 confirmations. Mined 20 mins ago'">
@@ -31,12 +27,12 @@
 
 <script>
 import Date from "../Widgets/Date";
-import StatusIcon from "../Widgets/StatusIcon";
+import ViewOnEtherscan from "../Widgets/ViewOnEtherscan";
 
 export default {
   components: {
     Date,
-    StatusIcon
+    ViewOnEtherscan
   },
   data() {
     return {
