@@ -21,7 +21,7 @@
 
 <script>
 import Date from "../Widgets/Date";
-import StatusIcon from "../Widgets/StatusIcon"
+import StatusIcon from "../Widgets/StatusIcon";
 
 export default {
   components: {
@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       transactions: []
-    }
+    };
   },
   mounted () {
     this.transactions = this.$ls.get("transactions") || []
