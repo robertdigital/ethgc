@@ -1,4 +1,4 @@
-[submodule "library/artifacts"]
-	path = library/artifacts
-	url = https://github.com/hardlydifficult/ethgc.git
-	branch = artifacts
+[submodule "SolidityContracts"]
+	path = SolidityContracts
+	url = https://github.com/hardlydifficult/soliditycontracts.git
+	branch = master
