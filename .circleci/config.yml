@@ -9,16 +9,8 @@ jobs:
       - run: git submodule sync
       - run: git submodule update --init --recursive
 
-      # installs everything for the monorepo
-      - run: npm i
-
-      # lint and commit any changes, which may restart the build
-      - run: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-      - run: npm run lint # includes --fix
-      - run: bash .circleci/commit.sh
-
-      # build contracts
-      - run: cd contracts && npm run compile
+      - run: npm i --production --ignore-scripts
+      - run: cd library && npm i --production --ignore-scripts
 
       # save checkout & build
       - persist_to_workspace:
@@ -34,7 +26,15 @@ jobs:
       - attach_workspace:
           at: '..'
 
+      - run: cd contracts && npm i # --production causes issues with the gas reporter
+      - run: cd contracts && npm run compile
       - run: cd contracts && npm run test
+
+      - persist_to_workspace:
+          root: '..'
+          paths:
+            - repo/contracts/build
+            - repo/contracts/node_modules
 
   buildWebsite:
     docker:
@@ -44,12 +44,14 @@ jobs:
       - attach_workspace:
           at: '..'
 
+      - run: cd website && npm i # --production breaks the build
       - run: cd website && npm run build
 
       - persist_to_workspace:
           root: '..'
           paths:
             - repo/website/dist
+            - repo/website/node_modules
 
   buildDocs:
     docker:
@@ -59,12 +61,27 @@ jobs:
       - attach_workspace:
           at: '..'
 
+      - run: cd docs && npm i --production
       - run: cd docs && npm run build
 
       - persist_to_workspace:
           root: '..'
           paths:
             - repo/docs/docs/.vuepress/dist
+            - repo/docs/node_modules
+
+  lint:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: '..'
+
+      # lint and commit any changes, which may restart the build
+      - run: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      - run: npm run lint # includes --fix
+      - run: bash .circleci/commit.sh
 
   push:
     docker:
@@ -73,6 +90,8 @@ jobs:
     steps:
       - attach_workspace:
           at: '..'
+
+      - run: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 
       # Push website
       - run: bash .circleci/deploy-ghpages.sh
@@ -101,12 +120,15 @@ workflows:
       - buildWebsite:
           requires:
             - init
+      - lint:
+          requires:
+            - testContracts
+            - buildWebsite
+            - buildDocs
       - push:
           filters:
             branches:
               only:
                 - master
           requires:
-            - testContracts
-            - buildWebsite
-            - buildDocs
+            - lint
