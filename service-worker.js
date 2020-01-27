@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.23c45be96f76c62afa8af438856bfc51.js"
+  "/precache-manifest.59f6dd63097a6dc8c4203a28e403b1e8.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "ethgc"});
